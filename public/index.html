@@ -1,0 +1,82 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>relay</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root {
+    --ground: #0f1113; --panel: #16191d; --ink: #e8eaed; --muted: #97a0aa;
+    --rule: #262b32; --live: #6fd3a8; --cut: #e8a06a; --accent: #7fb4f5;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font: 15px/1.55 ui-sans-serif, system-ui, sans-serif;
+  }
+  main { max-width: 54rem; margin: 0 auto; padding: 3rem 1.5rem 5rem }
+  h1 { font-size: 1.8rem; letter-spacing: -.03em; margin: 0 0 .4rem }
+  p.lede { color: var(--muted); margin: 0 0 1.6rem; line-height: 1.6 }
+  .bar {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    padding: .85rem 1rem; border: 1px solid var(--rule);
+    border-radius: 12px; background: var(--panel); margin-bottom: 1rem;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--cut) }
+  .on .dot { background: var(--live) }
+  .state { font-weight: 600; font-size: .9rem; color: var(--cut) }
+  .on .state { color: var(--live) }
+  .grow { flex: 1; min-width: 8rem; color: var(--muted); font-size: .86rem }
+  input, button {
+    font: inherit; border-radius: 8px; border: 1px solid var(--rule);
+    background: #1c2026; color: var(--ink); padding: .45rem .7rem;
+  }
+  button { cursor: pointer; font-weight: 600 }
+  textarea {
+    width: 100%; min-height: 20rem; resize: vertical; padding: 1rem;
+    border: 1px solid var(--rule); border-radius: 12px; background: var(--panel);
+    color: var(--ink); font: inherit; line-height: 1.65;
+  }
+  textarea:focus-visible { outline: 2px solid var(--accent) }
+  .stats { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-top: .7rem;
+           font-size: .78rem; color: var(--muted) }
+  .stats b { color: var(--ink); font-variant-numeric: tabular-nums }
+  .note { margin-top: 2.2rem; color: var(--muted); font-size: .9rem; line-height: 1.65 }
+  code { background: #1c2026; padding: .1rem .35rem; border-radius: 5px; font-size: .86em }
+</style>
+
+<main>
+  <h1>relay</h1>
+  <p class="lede">
+    Open this page in a second window and type in both. The server holds the
+    operations and passes them on; it has no idea it is moving text.
+    <strong>Cut the wire</strong>, keep typing in both windows, then reconnect —
+    each side is sent only what it missed, not the document.
+  </p>
+
+  <div class="bar" id="bar">
+    <span class="dot"></span>
+    <span class="state" id="state">connecting</span>
+    <span class="grow" id="detail"></span>
+    <input id="room" value="doc" size="10" aria-label="Room">
+    <button id="wire">Cut the wire</button>
+  </div>
+
+  <textarea id="text" spellcheck="false" aria-label="Shared document"></textarea>
+
+  <div class="stats">
+    <span>you are <b id="me">—</b></span>
+    <span><b id="sent">0</b> sent</span>
+    <span><b id="got">0</b> received</span>
+    <span>room holds <b id="held">0</b></span>
+  </div>
+
+  <p class="note">
+    Each character carries the two it was typed between, so an edit lands where
+    its author meant it to however late it arrives. The server keeps an
+    append-only log per room and a version map per author — which is all it
+    needs to work out what a returning client missed, without either side
+    listing what it already has.
+  </p>
+</main>
+
+<script type="module" src="./client.js"></script>
