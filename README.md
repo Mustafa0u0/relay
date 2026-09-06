@@ -1,5 +1,7 @@
 # relay
 
+[![CI](https://github.com/Mustafa0u0/relay/actions/workflows/ci.yaml/badge.svg)](https://github.com/Mustafa0u0/relay/actions/workflows/ci.yaml)
+
 A sync server for operation-based CRDTs. It keeps a log per room, catches up
 whoever joins, and passes on what arrives — **without ever understanding what
 it is relaying.**
